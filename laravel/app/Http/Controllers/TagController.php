@@ -19,16 +19,26 @@ class TagController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     *
+     * Display a listing of the tags.
+     * Display a listing of the posts by tags(s).
+     * Display a listing of the count post by tag(s).
+     * @param  Request  $request
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        
+        if($request->has('search')){
+            $posts = $this->tag->post_by_tag($request->search);
+            return $posts->count() > 0 ? $this->response($posts, self::OK) : $this->error('Tag(s) not found', self::NOT_FOUND);
+        }
+        if($request->has('count_posts')){
+            $posts = $this->tag->count_post_by_tag($request->count);
+            return $posts->count() > 0 ? $this->response($posts, self::OK) : $this->error('Tag(s) not found', self::NOT_FOUND);
+        }
         $tag = $this->tag->all();
         return $this->response($tag, self::OK);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -86,29 +96,5 @@ class TagController extends Controller
         $tag->delete();
         Log::info('Tag deleted: '. $tag->toJson());
         return $this->response($tag, self::NO_CONTENT);
-    }
-
-    /**
-     * Display a listing of the post by tag(s).
-     *
-     * @param  string $tags
-     * @return Response
-     */
-    public function post_by_tag($tags)
-    {
-        $posts = $this->tag->post_by_tag($tags);
-        return $posts->count() > 0 ? $this->response($posts, self::OK) : $this->error('Tag(s) not found', self::NOT_FOUND);
-    }
-
-    /**
-     * Display a count of the post by tag(s).
-     *
-     * @param  string $tags
-     * @return Response
-     */
-    public function count_post_by_tag($tags)
-    {
-        $posts = $this->tag->count_post_by_tag($tags);
-        return $posts->count() > 0 ? $this->response($posts, self::OK) : $this->error('Tag(s) not found', self::NOT_FOUND);
     }
 }

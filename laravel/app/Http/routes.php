@@ -17,6 +17,4 @@ Route::group(array('prefix' => 'api/v1'), function()
     Route::resource('post', 'PostController', ['except' => ['edit', 'create']]);
     Route::resource('tag', 'TagController', ['except' => ['edit', 'create']]);
     Route::post('post/{post}/tags', 'PostController@add_tags');
-	Route::get('tag-post-information/{tag}', 'TagController@post_by_tag');
-	Route::get('count-post-tag-information/{tags}', 'TagController@count_post_by_tag');
 });

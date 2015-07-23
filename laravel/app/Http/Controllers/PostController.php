@@ -10,6 +10,16 @@ use App\Post;
 use App\Http\Requests\StorePostRequest;
 use Log;
 
+use Swagger\Annotations as SWG;
+
+/**
+ * @SWG\Resource(
+ *  apiVersion="1.0",
+ *  resourcePath="/post",
+ *  description="Post",
+ *  produces="['application/json']"
+ * )
+ */
 class PostController extends Controller
 {
     protected $post;
@@ -17,6 +27,17 @@ class PostController extends Controller
     function __construct(Post $post) {
         $this->post = $post;
     }
+
+    /**
+     * @SWG\Api(
+     *  path="/post",
+     *      @SWG\Operation(
+     *          method="GET",
+     *          summary="Displays all posts",
+     *          nickname="Get Posts"
+     *  )
+     * )
+     */
 
     /**
      * Display a listing of the resource.
@@ -29,6 +50,34 @@ class PostController extends Controller
         $post = $this->post->all();
         return $this->response($post, self::OK);
     }
+
+    /**
+     * @SWG\Api(
+     *  path="/post",
+     *      @SWG\Operation(
+     *          method="POST",
+     *          summary="Store post",
+     *          nickname="Store post",
+     *      @SWG\Parameter(
+     *          name="title",
+     *          description="Title of post",
+     *          paramType="form",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="string"
+     *          ),
+     *      @SWG\Parameter(
+     *          name="body",
+     *          description="Body of post",
+     *          paramType="form",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="integer"
+     *          ),
+     *  )
+     * )
+     */
+
 
     /**
      * Store a newly created resource in storage.
@@ -44,6 +93,25 @@ class PostController extends Controller
     }
 
     /**
+     * @SWG\Api(
+     *  path="/post/{id}",
+     *      @SWG\Operation(
+     *          method="GET",
+     *          summary="Get information of a post",
+     *          nickname="Get information of a post",
+     *      @SWG\Parameter(
+     *          name="id",
+     *          description="id of post",
+     *          paramType="path",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="string"
+     *          ),
+     *  )
+     * )
+     */
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -54,6 +122,42 @@ class PostController extends Controller
         $post = $this->post->find($id);
         return $post ? $this->response($post, self::OK) : $this->error('Post not found', self::NOT_FOUND);
     }
+
+
+    /**
+     * @SWG\Api(
+     *  path="/post/{id}",
+     *      @SWG\Operation(
+     *          method="PATCH",
+     *          summary="Update information of a post",
+     *          nickname="Update information of a post",
+     *      @SWG\Parameter(
+     *          name="id",
+     *          description="id of post to update",
+     *          paramType="path",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="string"
+     *          ),
+     *      @SWG\Parameter(
+     *          name="title",
+     *          description="title to update",
+     *          paramType="form",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="string"
+     *          ),
+     *      @SWG\Parameter(
+     *          name="body",
+     *          description="body to update",
+     *          paramType="form",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="string"
+     *          ),
+     *  )
+     * )
+     */
 
     /**
      * Update the specified resource in storage.
@@ -73,6 +177,25 @@ class PostController extends Controller
     }
 
     /**
+     * @SWG\Api(
+     *  path="/post/{id}",
+     *      @SWG\Operation(
+     *          method="DELETE",
+     *          summary="Delete information of a post",
+     *          nickname="Delete information of a post",
+     *      @SWG\Parameter(
+     *          name="id",
+     *          description="id of post to remove",
+     *          paramType="path",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="string"
+     *          ),
+     *  )
+     * )
+     */
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -88,7 +211,34 @@ class PostController extends Controller
         Log::info('Post deleted: '. $post->toJson());
         return $this->response($post, self::NO_CONTENT);
     }
-    
+
+    /**
+     * @SWG\Api(
+     *  path="/post/{id}/tags",
+     *      @SWG\Operation(
+     *          method="POST",
+     *          summary="Add tags to post",
+     *          nickname="Add tags to post",
+     *      @SWG\Parameter(
+     *          name="id",
+     *          description="id of post to add tags",
+     *          paramType="path",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="string"
+     *          ),
+     *      @SWG\Parameter(
+     *          name="tags",
+     *          description="id(s) of tags to add",
+     *          paramType="form",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="string"
+     *          ),
+     *  )
+     * )
+     */
+ 
     /**
      * add tags to specified post.
      *

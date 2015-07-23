@@ -160,6 +160,41 @@ class PostController extends Controller
      */
 
     /**
+     * @SWG\Api(
+     *  path="/post/{id}",
+     *      @SWG\Operation(
+     *          method="PUT",
+     *          summary="Update information of a post",
+     *          nickname="Update information of a post",
+     *      @SWG\Parameter(
+     *          name="id",
+     *          description="id of post to update",
+     *          paramType="path",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="string"
+     *          ),
+     *      @SWG\Parameter(
+     *          name="title",
+     *          description="title to update",
+     *          paramType="form",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="string"
+     *          ),
+     *      @SWG\Parameter(
+     *          name="body",
+     *          description="body to update",
+     *          paramType="form",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="string"
+     *          ),
+     *  )
+     * )
+     */
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  StorePostRequest  $request
@@ -229,7 +264,7 @@ class PostController extends Controller
      *          ),
      *      @SWG\Parameter(
      *          name="tags",
-     *          description="id(s) of tags to add",
+     *          description="id(s) of tags to add, separate with commas i.e 1,2,3",
      *          paramType="form",
      *              required=true,
      *              allowMultiple=false,

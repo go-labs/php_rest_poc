@@ -27,50 +27,31 @@ class TagController extends Controller
         $this->tag = $tag;
     }
 
-    /**
-     * @SWG\Api(
-     *  path="/tag",
-     *      @SWG\Operation(
-     *          method="GET",
-     *          summary="Displays all tags",
-     *          nickname="Get Tags"
-     *  )
-     * )
-     */
 
     /**
      * @SWG\Api(
-     *  path="/tag?search={tags}",
+     *  path="/tag",
      *      @SWG\Operation(
      *          method="GET",
      *          summary="Display post by tag(s)",
      *          nickname="Display post by tag(s)",
      *      @SWG\Parameter(
      *          name="tags",
-     *          description="id(s) of tags to search posts",
-     *          paramType="path",
-     *              required=true,
+     *          description="id(s) of tags to tags posts, separate multiple values with commas i.e 1,2,3",
+     *          paramType="query",
+     *              required=false,
      *              allowMultiple=false,
-     *              type="string"
-     *          )
-     *  )
-     * )
-     */
-
-    /**
-     * @SWG\Api(
-     *  path="/tag?count_posts={tags}",
-     *      @SWG\Operation(
-     *          method="GET",
-     *          summary="Display the count of post by tag(s)",
-     *          nickname="Display the count of post by tag(s)",
-     *      @SWG\Parameter(
-     *          name="tags",
+     *              type="string",
+     *              defaultValue=""
+     *          ),
+    *      @SWG\Parameter(
+     *          name="count_only",
      *          description="id(s) of tags to count posts",
-     *          paramType="path",
-     *              required=true,
+     *          paramType="query",
+     *              required=false,
      *              allowMultiple=false,
-     *              type="string"
+     *              type="boolean",
+     *              defaultValue="false"
      *          )
      *  )
      * )
@@ -86,16 +67,15 @@ class TagController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->has('search')){
-            $posts = $this->tag->post_by_tag($request->search);
-            return $posts->count() > 0 ? $this->response($posts, self::OK) : $this->error('Tag(s) not found', self::NOT_FOUND);
+        $tags = [];
+
+        $tags = ($request->has('tags')) ? $this->tag->post_by_tag($request->tags) : $this->tag->all();
+
+        if($request->count_only === 'true'){
+            $tags = $tags[0]->posts->count();
         }
-        if($request->has('count_posts')){
-            $posts = $this->tag->count_post_by_tag($request->count_posts);
-            return $posts->count() > 0 ? $this->response($posts, self::OK) : $this->error('Tag(s) not found', self::NOT_FOUND);
-        }
-        $tag = $this->tag->all();
-        return $this->response($tag, self::OK);
+
+        return $this->response($tags, self::OK);
     }
 
     /**

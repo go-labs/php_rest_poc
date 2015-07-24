@@ -21,24 +21,24 @@ abstract class Controller extends BaseController
 
 	protected function error($errors, $statusCode)
 	{
-		return response()->json(array(
+		return response()->json([
         	'success' => false,
         	'errors' => $errors
-    	), $statusCode);
+    	], $statusCode);
 	}
 
 	protected function response($data, $statusCode)
 	{
-		return response()->json(array(
+		return response()->json([
         	'success' => true,
         	'data' => $data
-    	), $statusCode);
+    	], $statusCode);
 	}
 
 	protected function email_sender($template, $data, $subject)
 	{
 		$email = self::EMAIL_SEND;
-		Mail::queue($template, array( 'data' => $data), function ($m) use($email, $subject){
+		Mail::queue($template, ['data' => $data], function ($m) use($email, $subject){
             $m->to( $email, $email)->subject($subject);
         });
 	}

@@ -15,6 +15,14 @@ class Post extends Model
         return $this->belongsToMany('App\Tag','post_tags', 'post_id', 'tag_id');
     }
 
+    public static function search_by_tag($tags){
+        return \DB::table('posts')->join('post_tags', 'posts.id', '=', 'post_tags.post_id')
+            ->join('tags', 'tags.id', '=', 'post_tags.tag_id')
+            ->select('posts.*')
+            ->wherein('tags.name', explode(',', $tags))
+            ->get();
+    }
+
     public function add_tags($post, $data)
     {
     	try {

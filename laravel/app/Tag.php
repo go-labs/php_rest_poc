@@ -13,13 +13,4 @@ class Tag extends Model
     {
         return $this->belongsToMany('App\Post', 'post_tags', 'tag_id', 'post_id');
     }
-    
-    public function post_by_tag($tags)
-    {
-        $data = explode(',', $tags);
-        $posts = $this->with('posts')
-	                  ->wherein('name', $data)
-	                  ->get();
-        return $posts;
-    }
 }

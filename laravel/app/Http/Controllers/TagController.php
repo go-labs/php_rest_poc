@@ -22,7 +22,7 @@ use Swagger\Annotations as SWG;
 class TagController extends Controller
 {
     protected $tag;
-    
+
     function __construct(Tag $tag) {
         $this->tag = $tag;
     }
@@ -33,49 +33,28 @@ class TagController extends Controller
      *  path="/tag",
      *      @SWG\Operation(
      *          method="GET",
-     *          summary="Display post by tag(s)",
-     *          nickname="Display post by tag(s)",
-     *      @SWG\Parameter(
-     *          name="tags",
-     *          description="id(s) of tags to tags posts, separate multiple values with commas i.e 1,2,3",
-     *          paramType="query",
+     *          summary="Returns tags",
+     *          nickname="HTTP GET tags",
+     *          @SWG\Parameter(
+     *            name="name",
+     *            description="name of the tag to search",
+     *            paramType="query",
      *              required=false,
      *              allowMultiple=false,
      *              type="string",
      *              defaultValue=""
-     *          ),
-    *      @SWG\Parameter(
-     *          name="count_only",
-     *          description="id(s) of tags to count posts",
-     *          paramType="query",
-     *              required=false,
-     *              allowMultiple=false,
-     *              type="boolean",
-     *              defaultValue="false"
      *          )
      *  )
      * )
      */
-
-
-    /**
-     * Display a listing of the tags.
-     * Display a listing of the posts by tags(s).
-     * Display a listing of the count post by tag(s).
-     * @param  Request  $request
-     * @return Response
-     */
     public function index(Request $request)
     {
-        $tags = [];
-
-        $tags = ($request->has('tags')) ? $this->tag->post_by_tag($request->tags) : $this->tag->all();
-
-        if($request->count_only === 'true'){
-            $tags = $tags[0]->posts->count();
+        $criteria = [];
+        if ($request->has('name')){
+            $criteria['name'] = $request->name;
         }
 
-        return $this->response($tags, self::OK);
+        return $this->response($this->tag->where($criteria)->get(), self::OK);
     }
 
     /**
@@ -83,8 +62,8 @@ class TagController extends Controller
      *  path="/tag",
      *      @SWG\Operation(
      *          method="POST",
-     *          summary="Store a tag",
-     *          nickname="Store a tag",
+     *          summary="Creates a new tag",
+     *          nickname="HTTP POST tag",
      *      @SWG\Parameter(
      *          name="name",
      *          description="Name of tag",
@@ -95,14 +74,6 @@ class TagController extends Controller
      *          ),
      *  )
      * )
-     */
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  StoreTagRequest  $request
-     * @return Response
      */
     public function store(StoreTagRequest $request)
     {
@@ -115,8 +86,8 @@ class TagController extends Controller
      *  path="/tag/{id}",
      *      @SWG\Operation(
      *          method="GET",
-     *          summary="Get information of a tag",
-     *          nickname="Get information of a tag",
+     *          summary="Returns a specific tag",
+     *          nickname="HTTP GET tag",
      *      @SWG\Parameter(
      *          name="id",
      *          description="id of tag",
@@ -127,14 +98,6 @@ class TagController extends Controller
      *          ),
      *  )
      * )
-     */
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
      */
     public function show($id)
     {
@@ -147,8 +110,8 @@ class TagController extends Controller
      *  path="/tag/{id}",
      *      @SWG\Operation(
      *          method="PATCH",
-     *          summary="Update information of a tag",
-     *          nickname="Update information of a tag",
+     *          summary="Updates a specific tag",
+     *          nickname="HTTP PATCH tag",
      *      @SWG\Parameter(
      *          name="id",
      *          description="id of tag to update",
@@ -174,8 +137,8 @@ class TagController extends Controller
      *  path="/tag/{id}",
      *      @SWG\Operation(
      *          method="PUT",
-     *          summary="Update information of a tag",
-     *          nickname="Update information of a tag",
+     *          summary="Updates a specific tag",
+     *          nickname="HTTP PUT tag",
      *      @SWG\Parameter(
      *          name="id",
      *          description="id of tag to update",
@@ -195,14 +158,6 @@ class TagController extends Controller
      *  )
      * )
      */
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  StoreTagRequest  $request
-     * @param  int  $id
-     * @return Response
-     */
     public function update(StoreTagRequest $request, $id)
     {
         $tag = $this->tag->find($id);
@@ -218,8 +173,8 @@ class TagController extends Controller
      *  path="/tag/{id}",
      *      @SWG\Operation(
      *          method="DELETE",
-     *          summary="Delete information of a post",
-     *          nickname="Delete information of a post",
+     *          summary="Deletes a specific tag",
+     *          nickname="HTTP DELETE tag",
      *      @SWG\Parameter(
      *          name="id",
      *          description="id of tag to remove",
@@ -230,13 +185,6 @@ class TagController extends Controller
      *          ),
      *  )
      * )
-     */
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
      */
     public function destroy($id)
     {

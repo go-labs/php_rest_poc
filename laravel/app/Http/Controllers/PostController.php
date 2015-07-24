@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use App\Post;
 use App\Http\Requests\StorePostRequest;
 use Log;
-
 use Swagger\Annotations as SWG;
 
 /**
@@ -23,7 +22,7 @@ use Swagger\Annotations as SWG;
 class PostController extends Controller
 {
     protected $post;
-    
+
     function __construct(Post $post) {
         $this->post = $post;
     }
@@ -33,22 +32,36 @@ class PostController extends Controller
      *  path="/post",
      *      @SWG\Operation(
      *          method="GET",
-     *          summary="Displays all posts",
-     *          nickname="Get Posts"
+     *          summary="Returns posts",
+     *          nickname="HTTP GET posts",
+     *          @SWG\Parameter(
+     *            name="tags",
+     *            description="search post by tags, separate multiple values with commas i.e funny,jokes,movies",
+     *            paramType="query",
+     *              required=false,
+     *              allowMultiple=false,
+     *              type="string",
+     *              defaultValue=""
+     *          ),
+    *           @SWG\Parameter(
+     *            name="count_only",
+     *            description="counts the number of posts by tag",
+     *            paramType="query",
+     *              required=true,
+     *              allowMultiple=false,
+     *              type="boolean",
+     *              defaultValue="false"
+     *          )
      *  )
      * )
      */
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        
-        $post = $this->post->all();
-        return $this->response($post, self::OK);
+        $posts = $request->has('tags') ? $this->post->search_by_tag($request->tags) : $this->post->all();
+        if($request->count_only === 'true'){
+            $posts = count($posts);
+        }
+        return $this->response($posts, self::OK);
     }
 
     /**
@@ -56,8 +69,8 @@ class PostController extends Controller
      *  path="/post",
      *      @SWG\Operation(
      *          method="POST",
-     *          summary="Store post",
-     *          nickname="Store post",
+     *          summary="Creates a new post",
+     *          nickname="HTTP POST posts",
      *      @SWG\Parameter(
      *          name="title",
      *          description="Title of post",
@@ -77,14 +90,6 @@ class PostController extends Controller
      *  )
      * )
      */
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  StorePostRequest  $request
-     * @return Response
-     */
     public function store(StorePostRequest $request)
     {
         $post = $this->post->create($request->all());
@@ -97,8 +102,8 @@ class PostController extends Controller
      *  path="/post/{id}",
      *      @SWG\Operation(
      *          method="GET",
-     *          summary="Get information of a post",
-     *          nickname="Get information of a post",
+     *          summary="Returns a specific post",
+     *          nickname="HTTP GET post",
      *      @SWG\Parameter(
      *          name="id",
      *          description="id of post",
@@ -109,13 +114,6 @@ class PostController extends Controller
      *          ),
      *  )
      * )
-     */
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
      */
     public function show($id)
     {
@@ -129,8 +127,8 @@ class PostController extends Controller
      *  path="/post/{id}",
      *      @SWG\Operation(
      *          method="PATCH",
-     *          summary="Update information of a post",
-     *          nickname="Update information of a post",
+     *          summary="Updates a specific post",
+     *          nickname="HTTP PATCH post",
      *      @SWG\Parameter(
      *          name="id",
      *          description="id of post to update",
@@ -164,8 +162,8 @@ class PostController extends Controller
      *  path="/post/{id}",
      *      @SWG\Operation(
      *          method="PUT",
-     *          summary="Update information of a post",
-     *          nickname="Update information of a post",
+     *          summary="Updates a specific post",
+     *          nickname="HTTP PUT post",
      *      @SWG\Parameter(
      *          name="id",
      *          description="id of post to update",
@@ -193,14 +191,6 @@ class PostController extends Controller
      *  )
      * )
      */
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  StorePostRequest  $request
-     * @param  int  $id
-     * @return Response
-     */
     public function update(StorePostRequest $request, $id)
     {
         $post = $this->post->find($id);
@@ -216,8 +206,8 @@ class PostController extends Controller
      *  path="/post/{id}",
      *      @SWG\Operation(
      *          method="DELETE",
-     *          summary="Delete information of a post",
-     *          nickname="Delete information of a post",
+     *          summary="Deletes a specific post",
+     *          nickname="HTTP DELETE post",
      *      @SWG\Parameter(
      *          name="id",
      *          description="id of post to remove",
@@ -228,13 +218,6 @@ class PostController extends Controller
      *          ),
      *  )
      * )
-     */
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
      */
     public function destroy($id)
     {
@@ -252,8 +235,8 @@ class PostController extends Controller
      *  path="/post/{id}/tags",
      *      @SWG\Operation(
      *          method="POST",
-     *          summary="Add tags to post",
-     *          nickname="Add tags to post",
+     *          summary="Add tags to posts",
+     *          nickname="Add tags to posts",
      *      @SWG\Parameter(
      *          name="id",
      *          description="id of post to add tags",
@@ -272,14 +255,6 @@ class PostController extends Controller
      *          ),
      *  )
      * )
-     */
- 
-    /**
-     * add tags to specified post.
-     *
-     * @param  int  $id
-     * @param  Request  $request
-     * @return Response
      */
     public function add_tags(Request $request, $id)
     {

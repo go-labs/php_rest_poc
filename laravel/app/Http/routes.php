@@ -11,10 +11,18 @@
 |
 */
 
-
 Route::group(array('prefix' => 'api/v1'), function()
 {
     Route::resource('post', 'PostController', ['except' => ['edit', 'create']]);
     Route::resource('tag', 'TagController', ['except' => ['edit', 'create']]);
     Route::post('post/{post}/tags', 'PostController@add_tags');
 });
+
+DB::listen(
+    function ($sql, $bindings, $time) {
+        // echo $sql . "\n";
+        //  $sql - select * from `ncv_users` where `ncv_users`.`id` = ? limit 1
+        //  $bindings - [5]
+        //  $time(in milliseconds) - 0.38
+    }
+);

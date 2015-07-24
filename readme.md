@@ -10,3 +10,6 @@
 	$ php artisan migrate
 	$ php artisan serve
 	$ open http://localhost:8000 in your favorite browser
+
+###Swagger
+![Swagger UI](https://raw.githubusercontent.com/go-labs/php_rest_poc/master/swagger_ui.png "Swagger UI")

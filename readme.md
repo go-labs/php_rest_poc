@@ -7,6 +7,7 @@
 	$ composer install
 	$ cp .env.example .env
 	$ edit .env file with database information
+	$ php artisan key:generate
 	$ php artisan migrate
 	$ php artisan serve
 	$ open http://localhost:8000 in your favorite browser

@@ -5,36 +5,36 @@ use App\Models\Tag;
 class EloquentTagRepository implements ITagRepository{
 
 
-	public function all()
-	{
-		return Tag::all();
-	}
+    public function all()
+    {
+        return Tag::all();
+    }
 
     public function find($id)
     {
         return Tag::find($id);
     }
 
-	public function create(array $data)
-	{
-		return Tag::create($data);
-	}
+    public function create(array $data)
+    {
+        return Tag::create($data);
+    }
 
     public function update(array $data, $id)
     {
-    	$tag = Tag::find($id);
-    	if(!$tag)
-    		return false;
-    	$tag->fill($data)->save();
-    	return $tag ? $tag : null;
+        $tag = Tag::find($id);
+        if(!$tag)
+            return false;
+        $tag->fill($data)->save();
+        return $tag ? $tag : null;
     }
 
     public function delete($id)
     {
- 		$tag = Tag::find($id);
+        $tag = Tag::find($id);
         if (!$tag)
             return false;
- 		$tag->posts()->detach();
+        $tag->posts()->detach();
         return $tag->delete();
     }
 

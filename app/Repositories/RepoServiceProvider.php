@@ -5,12 +5,12 @@ use Illuminate\Support\ServiceProvider;
 
 class RepoServiceProvider extends ServiceProvider {
 
-	public function register()
-	{
-		$this->app->bind('App\Repositories\Post\IPostRepository',
-			'App\Repositories\Post\EloquentPostRepository');
+    public function register()
+    {
+        $this->app->bind('App\Repositories\Post\IPostRepository',
+            'App\Repositories\Post\EloquentPostRepository');
 
-		$this->app->bind('App\Repositories\Tag\ITagRepository',
-			'App\Repositories\Tag\EloquentTagRepository');
-	}
+        $this->app->bind('App\Repositories\Tag\ITagRepository',
+            'App\Repositories\Tag\EloquentTagRepository');
+    }
 }

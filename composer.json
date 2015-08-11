@@ -8,7 +8,7 @@
     {
         "type": "git",
         "url": "git@github.com:mvpasarel/swagger-laravel.git"
-    }   
+    }
     ],
     "require": {
         "php": ">=5.5.9",

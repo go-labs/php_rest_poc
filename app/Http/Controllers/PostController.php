@@ -6,10 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Post;
 use App\Http\Requests\StorePostRequest;
-use Log;
 use Swagger\Annotations as SWG;
+use App\Repositories\Post\IPostRepository;
 
 /**
  * @SWG\Resource(
@@ -23,7 +22,7 @@ class PostController extends Controller
 {
     protected $post;
 
-    function __construct(Post $post) {
+    function __construct(IPostRepository $post) {
         $this->post = $post;
     }
 
@@ -43,7 +42,7 @@ class PostController extends Controller
      *              type="string",
      *              defaultValue=""
      *          ),
-    *           @SWG\Parameter(
+     *           @SWG\Parameter(
      *            name="count_only",
      *            description="counts the number of posts by tag",
      *            paramType="query",
@@ -93,7 +92,6 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         $post = $this->post->create($request->all());
-        $this->email_sender('emails.create_new_post', $post, 'New post created.');
         return $this->response($post, self::CREATED);
     }
 
@@ -120,7 +118,6 @@ class PostController extends Controller
         $post = $this->post->find($id);
         return $post ? $this->response($post, self::OK) : $this->error('Post not found', self::NOT_FOUND);
     }
-
 
     /**
      * @SWG\Api(
@@ -156,7 +153,6 @@ class PostController extends Controller
      *  )
      * )
      */
-
     /**
      * @SWG\Api(
      *  path="/post/{id}",
@@ -193,11 +189,9 @@ class PostController extends Controller
      */
     public function update(StorePostRequest $request, $id)
     {
-        $post = $this->post->find($id);
+        $post = $this->post->update($request->all(), $id);
         if (!$post)
             return $this->error('Post not found', self::NOT_FOUND);
-        $post->fill($request->all());
-        $post->save();
         return $this->response($post, self::OK);
     }
 
@@ -221,12 +215,9 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        $post = $this->post->find($id);
+        $post = $this->post->delete($id);
         if (!$post)
             return $this->error('Post not found', self::NOT_FOUND);
-        $post->tags()->detach();
-        $post->delete();
-        Log::info('Post deleted: '. $post->toJson());
         return $this->response($post, self::NO_CONTENT);
     }
 
@@ -258,11 +249,9 @@ class PostController extends Controller
      */
     public function add_tags(Request $request, $id)
     {
-
-        $post = $this->post->find($id);
-        if (!$post)
+        $post = $this->post->add_tags($request->tags, $id);
+        if (is_null($post))
             return $this->error('Post not found', self::NOT_FOUND);
-        $post_tag = $this->post->add_tags($post, $request->tags);
-        return is_null($post_tag) ? $this->response($post->tags, self::OK) : $this->error('An error has occurred. Try again.', self::NOT_FOUND);
+        return $post ? $this->response($post, self::OK) : $this->error('An error has occurred. Try again.', self::NOT_FOUND);
     }
 }

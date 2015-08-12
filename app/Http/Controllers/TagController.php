@@ -6,10 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Tag;
 use App\Http\Requests\StoreTagRequest;
-use Log;
 use Swagger\Annotations as SWG;
+use App\Repositories\Tag\ITagRepository;
 
 /**
  * @SWG\Resource(
@@ -23,10 +22,9 @@ class TagController extends Controller
 {
     protected $tag;
 
-    function __construct(Tag $tag) {
+    function __construct(ITagRepository $tag) {
         $this->tag = $tag;
     }
-
 
     /**
      * @SWG\Api(
@@ -54,7 +52,7 @@ class TagController extends Controller
             $criteria['name'] = $request->name;
         }
 
-        return $this->response($this->tag->where($criteria)->get(), self::OK);
+        return $this->response($this->tag->search_by($criteria), self::OK);
     }
 
     /**
@@ -131,7 +129,6 @@ class TagController extends Controller
      *  )
      * )
      */
-
     /**
      * @SWG\Api(
      *  path="/tag/{id}",
@@ -160,11 +157,9 @@ class TagController extends Controller
      */
     public function update(StoreTagRequest $request, $id)
     {
-        $tag = $this->tag->find($id);
+        $tag = $this->tag->update($request->all(), $id);
         if (!$tag)
             return $this->error('Tag not found', self::NOT_FOUND);
-        $tag->fill($request->all());
-        $tag->save();
         return $this->response($tag, self::OK);
     }
 
@@ -188,12 +183,9 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        $tag = $this->tag->find($id);
+        $tag = $this->tag->delete($id);
         if (!$tag)
             return $this->error('Tag not found', self::NOT_FOUND);
-        $tag->posts()->detach();
-        $tag->delete();
-        Log::info('Tag deleted: '. $tag->toJson());
         return $this->response($tag, self::NO_CONTENT);
     }
 }

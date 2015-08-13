@@ -7,8 +7,8 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
      *
      * @var string
      */
-    protected $baseUrl = 'http://localhost';
-
+    protected $baseUrl = 'http://localhost:8000';
+    const API_VI = '/api/v1/';
     /**
      * Creates the application.
      *
@@ -21,5 +21,12 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
         return $app;
+    }
+
+    public function assertResponse($response, $expected_body, $expected_status = 200)
+    {
+        $body = $response->getContent();
+        $this->assertEquals($expected_body, $body);
+        $this->assertResponseStatus($expected_status);
     }
 }

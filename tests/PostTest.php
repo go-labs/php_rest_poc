@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-
+use App\Repositories\Post\IPostRepository as IPostRepository;
 class PostTest extends TestCase
 {
     public function setUp()
@@ -21,7 +21,7 @@ class PostTest extends TestCase
 
     public function tearDown()
     {
-        //Mockery::close();
+        Mockery::close();
     }
 
     public function testSearchAllPost()
@@ -102,42 +102,49 @@ class PostTest extends TestCase
 
     public function testPut()
     {
-        $this->update_mock = Mockery::mock('App\Repositories\Post\IPostRepository');
-        $this->update_mock->shouldReceive('jsonSerialize')->once();
-        $this->update_mock->shouldReceive('setAttribute')->times(2);
-        $this->update_mock->shouldReceive('save')->once();
-        $this->mock->shouldReceive('update')->once()->andReturn($this->update_mock);
+        $this->fake_post_updated = [
+            'id' => 1,
+            'title' => 'title 2',
+            'body' => 'body 2',
+            'created_at' => '-0001-11-30 00:00:00',
+            'updated_at' => '-0001-11-30 00:00:00'
+        ];
+        $this->mock->shouldReceive('update')->once()->andReturn($this->fake_post_updated);
         $this->app->instance('App\Repositories\Post\IPostRepository', $this->mock);
-        $parameters = [ 'title' => 'title updated 2',
-                        'body' => 'body updated 2'];
-        $response = $this->put(self::API_VI . 'post/1', $parameters, ["Accept" => 'application/json'])->response;
-        $this->assertResponse($response, '{"success":true,"data":{}}', 200);
+        $parameters = array(
+           'title' => 'title 2',
+            'body' => 'body 2',
+        );
+        $response = $this->put(self::API_VI . 'post/1', $parameters);
+        $this->assertResponse($response->response, '{"success":true,"data":{"id":1,"title":"title 2","body":"body 2","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00"}}', 200);
     }
 
     public function testPatch()
     {
-        $this->update_mock = Mockery::mock('App\Repositories\Post\IPostRepository');
-        $this->update_mock->shouldReceive('jsonSerialize')->once();
-        $this->update_mock->shouldReceive('setAttribute')->times(2);
-        $this->update_mock->shouldReceive('save')->once();
-        $this->mock->shouldReceive('update')->once()->andReturn($this->update_mock);
+        $this->fake_post_updated = [
+            'id' => 1,
+            'title' => 'title 2',
+            'body' => 'body 2',
+            'created_at' => '-0001-11-30 00:00:00',
+            'updated_at' => '-0001-11-30 00:00:00'
+        ];
+        $this->mock->shouldReceive('update')->once()->andReturn($this->fake_post_updated);
         $this->app->instance('App\Repositories\Post\IPostRepository', $this->mock);
-        $parameters = [ 'title' => 'title updated 2',
-                        'body' => 'body updated 2'];
-        $response = $this->patch(self::API_VI . 'post/1', $parameters, ["Accept" => 'application/json'])->response;
-        $this->assertResponse($response, '{"success":true,"data":{}}', 200);
+        $parameters = array(
+           'title' => 'title 2',
+            'body' => 'body 2',
+        );
+        $response = $this->patch(self::API_VI . 'post/1', $parameters);
+        $this->assertResponse($response->response, '{"success":true,"data":{"id":1,"title":"title 2","body":"body 2","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00"}}', 200);
     }
 
     public function testUpdateWithMissingParameters()
     {
-        $this->update_mock = Mockery::mock('App\Repositories\Post\IPostRepository');
-        $this->mock->shouldReceive('update')->once()->andReturn($this->update_mock);
-        $this->app->instance('App\Repositories\Post\IPostRepository', $this->mock);
         $response = $this->put(self::API_VI . 'post/1', [], ["Accept" => 'application/json'])->response;
         $this->assertResponse($response, '{"title":["The title field is required."],"body":["The body field is required."]}', 422);
     }
 
-    /*public function testAddTags()
+    public function testAddTags()
     {
         $this->fake_post_tag = [
             'id' => 1,
@@ -147,11 +154,11 @@ class PostTest extends TestCase
             'updated_at' => '-0001-11-30 00:00:00',
             'pivot' => [ 'post_id' => 1, 'tag' => 1 ]
             ];
-        $this->mock->shouldReceive('add_tags')->once()->andReturn($this->fake_post);
+        $this->mock->shouldReceive('add_tags')->once()->andReturn($this->fake_post_tag);
         $this->app->instance('App\Repositories\Post\IPostRepository', $this->mock);
         $response = $this->post(self::API_VI . 'post/2/tags', ['tag' => 1])->response;
         $this->assertResponse($response, '{"success":true,"data":{"id":1,"title":"title 1","body":"body 1","created_at":"-0001-11-30 00:00:00","updated_at":"-0001-11-30 00:00:00","pivot":{"post_id":1,"tag":1}}}');
-    }*/
+    }
 
     public function testAddTagsFail()
     {

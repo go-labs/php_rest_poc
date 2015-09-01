@@ -16,7 +16,10 @@
     </testsuites>
     <filter>
         <whitelist>
-            <directory suffix=".php">app/</directory>
+            <directory suffix=".php">app/Http/Controllers/</directory>
+            <exclude>
+             <directory suffix=".php">app/Http/Controllers/Auth/</directory>
+            </exclude>
         </whitelist>
     </filter>
     <php>
@@ -25,4 +28,9 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
     </php>
+    <logging>
+        <log type="coverage-html" target="./reports" charset="UTF-8"
+            yui="true" highlight="true"
+            lowUpperBound="50" highLowerBound="80"/>
+    </logging>
 </phpunit>

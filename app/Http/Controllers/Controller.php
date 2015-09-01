@@ -34,12 +34,4 @@ abstract class Controller extends BaseController
         	'data' => $data
     	], $statusCode);
 	}
-
-	protected function email_sender($template, $data, $subject)
-	{
-		$email = self::EMAIL_SEND;
-		Mail::queue($template, ['data' => $data], function ($m) use($email, $subject){
-            $m->to( $email, $email)->subject($subject);
-        });
-	}
 }

@@ -20,3 +20,6 @@
 
 #### Unit Tests
 ![Main view](https://raw.githubusercontent.com/go-labs/php_rest_poc/master/screenshots/unit_tests.png "Unit tests")
+
+#### Code Coverage
+![Code Coverage](https://raw.githubusercontent.com/go-labs/php_rest_poc/master/screenshots/code_coverage.png "Code Coverage")

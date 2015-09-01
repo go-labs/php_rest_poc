@@ -13,7 +13,8 @@
 	$ open http://localhost:8000 in your favorite browser
 
 ### Running unit tests
-* Run **phpunit**
+* Run **phpunit** (if exists any problem, execute **vendor/phpunit/phpunit/phpunit** )
+* Make sure to check code coverage reports on the reports directory
 
 ###Swagger
 ![Swagger UI](https://raw.githubusercontent.com/go-labs/php_rest_poc/master/screenshots/swagger_ui.png "Swagger UI")

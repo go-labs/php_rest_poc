@@ -12,5 +12,11 @@
 	$ php artisan serve
 	$ open http://localhost:8000 in your favorite browser
 
+### Running unit tests
+* Run **phpunit**
+
 ###Swagger
-![Swagger UI](https://raw.githubusercontent.com/go-labs/php_rest_poc/master/swagger_ui.png "Swagger UI")
+![Swagger UI](https://raw.githubusercontent.com/go-labs/php_rest_poc/master/screenshots/swagger_ui.png "Swagger UI")
+
+#### Unit Tests
+![Main view](https://raw.githubusercontent.com/go-labs/php_rest_poc/master/screenshots/unit_tests.png "Unit tests")
